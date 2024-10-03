@@ -1,0 +1,10 @@
+
+# This is a comment, to show how #-prefixed lines are ignored.
+# It is possible to specify requirements as plain names.
+
+flask
+flask_migrate
+flask_sqlalchemy
+flask_mail
+pymysql
+wtforms
