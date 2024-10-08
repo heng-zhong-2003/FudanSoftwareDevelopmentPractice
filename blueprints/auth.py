@@ -1,14 +1,23 @@
 from flask import Blueprint, render_template, request, jsonify, redirect, url_for, session
 from exts import mail, db
 from flask_mail import Message
-import string
-import random
+import string, random, time
 from .forms import RegisterForm, LoginForm
 from models import UserModel
 from werkzeug.security import generate_password_hash, check_password_hash
 # 暂时数据库存储验证码
 from models import EmailCaptchaModel
 bp = Blueprint('auth', __name__, url_prefix='/auth')
+
+# 验证码有效的秒数，30 分钟
+captcha_valid_time = 30 * 60
+
+class CaptchaWithTime:
+    def __init__(self, captcha: str, time_stamp: float) -> None:
+        self.captcha = captcha
+        self.time_stamp = time_stamp
+
+email_captcha_env: dict[str, CaptchaWithTime] = dict()
 
 @bp.route("/login", methods=['GET', 'POST'])
 def login():
@@ -73,10 +82,20 @@ def get_email_captcha():
     1. 保存验证码到数据库
     2. 验证码有效时间
     '''
-    # 暂时采用数据库存储
     email_captcha = EmailCaptchaModel(email=email, captcha=captcha)
-    db.session.add(email_captcha)
-    db.session.commit()
+    curr_time = time.time()
+    # 邮箱和 (当前验证码, 当前时间) 放到全局 dict
+    email_captcha_env[email] = CaptchaWithTime(
+        captcha=email_captcha,
+        time_stamp=curr_time,
+    )
+    # 过期的 (邮箱, 验证码) 删掉。应该是不能边遍历边 mutate 容器的，所以我写了两个 for
+    keys_to_delete = []
+    for em, cap in email_captcha_env.items():
+        if curr_time - cap.time_stamp > captcha_valid_time:
+            keys_to_delete.append(em)
+    for em in keys_to_delete:
+        email_captcha_env.pop(em)
     # RESTful API
     # {code:200/400/500, message:"", data:{}}
     return jsonify({"code":200, "message":"", "data":None})
