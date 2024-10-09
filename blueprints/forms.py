@@ -1,4 +1,4 @@
-import wtforms
+import wtforms, auth
 from wtforms.validators import Email, Length, EqualTo
 from models import UserModel
 # 暂时存储验证码的数据库
@@ -18,19 +18,18 @@ class RegisterForm(wtforms.Form):
     def validate_email(self, field):
         email = field.data
         user = UserModel.query.filter_by(email=email).first()
-        if user: raise wtforms.ValidationError(message="邮箱已经存在!")
+        if user:
+            raise wtforms.ValidationError(message="邮箱已经存在!")
 
     # 验证码是否正确
     def validate_captcha(self, field):
         captcha = field.data
         email = self.email.data
         # 暂时存储验证码的数据库
-        EmailCaptchaModel.query.filter_by(email=email, captcha=captcha).first()
-        if not EmailCaptchaModel: raise wtforms.ValidationError(message="验证码不正确!")
-        # todo: 删除验证码
-        # else: 
-        #     db.session.delete(captcha)
-        #     db.session.commit()
+        if auth.email_captcha_env[email] != captcha:
+            raise wtforms.ValidationError(message="验证码不正确!")
+        else:
+            auth.email_captcha_env.pop(email)
 
 class LoginForm(wtforms.Form):
     email = wtforms.StringField(validators=[Email(message="邮箱格式不正确!")])

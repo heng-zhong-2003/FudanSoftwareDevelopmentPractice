@@ -20,11 +20,10 @@ class ProjectModel(db.Model):
     is_privary = db.Column(db.Boolean, nullable=False, default=False)
 
 # 暂时使用数据库存储验证码
-class EmailCaptchaModel(db.Model):
-    __tablename__ = 'email_captcha'
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    email = db.Column(db.String(50), nullable=False)
-    captcha = db.Column(db.String(10), nullable=False)
-    # 定期清理
-    # used = db.Column(db.Boolean, default=False)
-    
+# class EmailCaptchaModel(db.Model):
+#     __tablename__ = 'email_captcha'
+#     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+#     email = db.Column(db.String(50), nullable=False)
+#     captcha = db.Column(db.String(10), nullable=False)
+#     # 定期清理
+#     # used = db.Column(db.Boolean, default=False)

@@ -82,11 +82,10 @@ def get_email_captcha():
     1. 保存验证码到数据库
     2. 验证码有效时间
     '''
-    email_captcha = EmailCaptchaModel(email=email, captcha=captcha)
     curr_time = time.time()
     # 邮箱和 (当前验证码, 当前时间) 放到全局 dict
     email_captcha_env[email] = CaptchaWithTime(
-        captcha=email_captcha,
+        captcha=captcha,
         time_stamp=curr_time,
     )
     # 过期的 (邮箱, 验证码) 删掉。应该是不能边遍历边 mutate 容器的，所以我写了两个 for
