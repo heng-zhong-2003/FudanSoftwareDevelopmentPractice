@@ -1,5 +1,6 @@
 from exts import db
 
+name_max_len = 500
 field_max_len = 50
 category_max_len = 100
 outcome_max_len = 1024
@@ -14,10 +15,11 @@ class UserModel(db.Model):
 class ProjectModel(db.Model):
     __tablename__ = 'project'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    name = db.Column(db.String(name_max_len), nullable=False)
     field = db.Column(db.String(field_max_len), nullable=False)
     category = db.Column(db.String(category_max_len), nullable=False)
     outcome = db.Column(db.String(outcome_max_len), nullable=False)
-    is_privary = db.Column(db.Boolean, nullable=False, default=False)
+    is_private = db.Column(db.Boolean, nullable=False, default=False)
 
 # 暂时使用数据库存储验证码
 # class EmailCaptchaModel(db.Model):

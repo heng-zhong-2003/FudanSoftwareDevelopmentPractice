@@ -1,9 +1,10 @@
 import wtforms, auth
-from wtforms.validators import Email, Length, EqualTo
+from wtforms.validators import Email, Length, EqualTo, AnyOf
 from models import UserModel
 # 暂时存储验证码的数据库
 from models import EmailCaptchaModel
 from exts import db
+import models
 
 # 验证提交的数据是否符合要求
 class RegisterForm(wtforms.Form):
@@ -34,3 +35,20 @@ class RegisterForm(wtforms.Form):
 class LoginForm(wtforms.Form):
     email = wtforms.StringField(validators=[Email(message="邮箱格式不正确!")])
     password = wtforms.StringField(validators=[Length(min=6, max=20, message="密码长度不正确!")])
+
+class CreateForm(wtforms.Form):
+    name = wtforms.StringField(validators=[Length(min=1, max=models.name_max_len, message="项目名称长度不正确")])
+    field = wtforms.StringField(validators=[AnyOf(values=['commercial', 'government-sponsored'], message="资金来源格式不正确")])
+    # to do
+    category = wtforms.StringField(
+        validators=[AnyOf(values=['', '', '', ''], message="项目类别不正确!")])
+    outcome = wtforms.StringField(validators=[Length(min=0, max=1024, message="成果长度不正确!")])
+    if_privary = wtforms.BooleanField()
+
+class DeleteForm(wtforms.Form):
+    id = wtforms.IntegerField()
+
+class SearchForm(wtforms.Form):
+    # Todo
+    key_value=''
+    
