@@ -2,7 +2,7 @@ from flask import Flask, request, render_template, session, g
 import config
 from exts import db, mail
 from models import UserModel
-from blueprints.auth import bp as auth_bp
+from blueprints.authen import bp as auth_bp
 from blueprints.project import bp as pj_bp
 from flask_migrate import Migrate
 

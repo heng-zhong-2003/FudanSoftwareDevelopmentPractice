@@ -1,5 +1,5 @@
 import wtforms
-from . import auth
+import blueprints.authen as authen
 from wtforms.validators import Email, Length, EqualTo, AnyOf
 from models import UserModel
 # 暂时存储验证码的数据库
@@ -27,10 +27,10 @@ class RegisterForm(wtforms.Form):
         captcha = field.data
         email = self.email.data
         # 暂时存储验证码的数据库
-        if auth.email_captcha_env[email] != captcha:
+        if authen.email_captcha_env[email] != captcha:
             raise wtforms.ValidationError(message="验证码不正确!")
         else:
-            auth.email_captcha_env.pop(email)
+            authen.email_captcha_env.pop(email)
 
 class LoginForm(wtforms.Form):
     email = wtforms.StringField(validators=[Email(message="邮箱格式不正确!")])
