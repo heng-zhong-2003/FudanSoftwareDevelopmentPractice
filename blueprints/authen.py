@@ -22,36 +22,37 @@ email_captcha_env: dict[str, CaptchaWithTime] = dict()
 @bp.route("/login", methods=['GET', 'POST'])
 def login():
     if request.method == 'GET':
-        return render_template('login.html')
+        return render_template('login.html', errors={}, serverError='')
+    
     form = LoginForm(request.form)
+    print("Form Data:", request.form)  # 打印整个表单数据字典
+    print("Email:", form.email.data)  # 打印特定字段（例如 username）
+    print("Password:", form.password.data)  # 打印特定字段（例如 password）
     if form.validate():
         email = form.email.data
-        password = form.password.data
-        user = UserModel.query.filter_by(email == email).first()
-        if user and user.check_password(password):
-            # cookie:存储登录授权的信息
-            # flask session 加密存储在cookie中
+        input_password = form.password.data
+        user = UserModel.query.filter_by(email = email).first() 
+        hashed_password = generate_password_hash(user.password)
+        if user and check_password_hash(hashed_password, input_password):
             session['user_id'] = user.id
-            return redirect("/")
+            return jsonify({"message": "Login successful!", 'success': True}), 200  # 返回成功消息
         else:
-            print('邮箱或密码错误')
-            return redirect(url_for("auth.login"))
+            return jsonify({"message": "邮箱或密码错误", 'success': True}), 400  # 返回失败消息
     else:
-        print(form.errors)
-        return redirect(url_for("auth.login"))
-
+        return jsonify({"message": "Invalid form data", "errors": form.errors}), 400  # 返回验证错误
+    
 
 @bp.route("/register", methods=['GET', 'POST'])
 def register():
     if request.method == 'GET':
-        # 当用户第一次访问注册页面时，传递一个空的 errors 字典
-        # return jsonify({'success': True}), 200
         return render_template('register.html', errors={}, serverError='')
-
-
+    
     # 创建表单对象
-    form = RegisterForm(request.form)  # Vue.js 发送的是 JSON 数据
-    print(form)
+    form = RegisterForm(request.form)
+    print("Form Data:", request.form)  # 打印整个表单数据字典
+    print("Username:", form.username.data)  # 打印特定字段（例如 username）
+    print("Password:", form.password.data)  # 打印特定字段（例如 password）
+    print("Email:", form.email.data)  # 打印特定字段（例如 email）
     if form.validate():
         # 提取表单数据
         email = form.email.data
@@ -67,7 +68,6 @@ def register():
     else:
         # 返回表单验证错误
         return jsonify({'success': False, 'errors': form.errors})
-
 
 
 @bp.route("/logout")

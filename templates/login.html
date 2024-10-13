@@ -1,7 +1,91 @@
 {% extends "base.html" %}
 
-{% block title %}登录{% endblock %}
+{% block title %}Login{% endblock %}
 
 {% block head %}{% endblock %}
 
-{% block body %}{% endblock %}
+{% block body %}
+<div id="app">
+    <h2>Login</h2>
+    <form @submit.prevent="submitForm">
+        <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="email" class="form-control" id="email" v-model="form.email" required>
+            
+        </div>
+        <div class="form-group">
+            <label for="password">Password:</label>
+            <input type="password" class="form-control" id="password" v-model="form.password" required>
+            
+        </div>
+        <div v-if="errorMessage">{{ errorMessage }}</div>
+        <button type="submit" class="btn btn-primary">Login</button>
+    </form>
+</div>
+<script>
+    const registerVue = {
+        data(){
+            return {
+                form: {
+                    email: '',
+                    password: ''                    
+                },
+                errors: {},
+            }
+        },
+        methods: {
+            submitForm() {
+                console.log("submit begins", this.form);
+                // 将表单数据转换为 URL-encoded 格式
+                const formBody = new URLSearchParams();
+                Object.entries(this.form).forEach(([key, value]) => {
+                    formBody.append(key, value);
+                });
+
+                fetch('/auth/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    body: formBody.toString()  // 将 URLSearchParams 转换为字符串
+                })
+                .then(response => {
+                    // 打印响应状态和内容
+                    console.log(response);
+                    // 先检查 Content-Type 是否是 JSON
+                    const contentType = response.headers.get('Content-Type');
+                    if (contentType && contentType.includes('application/json')) {
+                        return response.json();  // 解析为 JSON
+                    } else {
+                        return response.text();  // 如果不是 JSON，返回文本
+                    }
+                })
+                .then(data => {
+                    // 判断数据是 JSON 还是纯文本
+                    if (typeof data === 'string') {
+                        console.log("Response text:", data);  // 打印原始响应
+                    } else {
+                        console.log("Parsed JSON data:", data);  // 打印解析后的 JSON 数据
+                        if (data.success) {
+                            // 注册成功，跳转到登录页面
+                            window.location.href = '/login';
+                        } else {
+                            // 处理验证错误
+                            this.errors = data.errors || {};
+                            this.serverError = 'Registration failed. Please try again.';
+                        }
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    this.serverError = 'An error occurred. Please try again.';
+                });
+            }
+
+        }
+    }
+    Vue.createApp(registerVue).mount('#app')
+    
+</script>
+</body>
+{% endblock %}
