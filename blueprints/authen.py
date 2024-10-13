@@ -6,7 +6,7 @@ from .forms import RegisterForm, LoginForm
 from models import UserModel
 from werkzeug.security import generate_password_hash, check_password_hash
 # 暂时数据库存储验证码
-from models import EmailCaptchaModel
+# from models import EmailCaptchaModel
 bp = Blueprint('auth', __name__, url_prefix='/auth')
 
 # 验证码有效的秒数，30 分钟
