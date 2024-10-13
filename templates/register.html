@@ -5,5 +5,110 @@
 {% block head %}{% endblock %}
 
 {% block body %}
-<div></div>
+<div id="app" class="container mt-5">
+    <h2>Register</h2>
+    <form @submit.prevent="submitForm">
+        <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="email" class="form-control" id="email" v-model="form.email" required>
+            <div v-if="errors.email">
+                <p>{{ errors.email }}</p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="username">Username:</label>
+            <input type="text" class="form-control" id="username" v-model="form.username" required>
+            <div v-if="errors.username">
+                <p>{{ errors.username }}</p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="password">Password:</label>
+            <input type="password" class="form-control" id="password" v-model="form.password" required>
+            <div v-if="errors.password">
+                <p>{{ errors.password }}</p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="password_confirm">Password:</label>
+            <input type="password" class="form-control" id="password_confirm" v-model="form.password_confirm" required>
+            <div v-if="errors.password">
+                <p>{{ errors.password_confirm }}</p>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary">Register</button>
+        <div v-if="serverError">
+            <p>{{ serverError }}</p>
+        </div>
+    </form>
+</div>
+<script>
+    const registerVue = {
+        data(){
+            return {
+                form: {
+                    email: '',
+                    username: '',
+                    password: '',
+                    password_confirm: ''
+                },
+                errors: {},
+                serverError: ''
+            }
+        },
+        methods: {
+            submitForm() {
+                console.log("submit begins", this.form);
+                // 将表单数据转换为 URL-encoded 格式
+                const formBody = new URLSearchParams();
+                Object.entries(this.form).forEach(([key, value]) => {
+                    formBody.append(key, value);
+                });
+
+                fetch('/auth/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    body: formBody.toString()  // 将 URLSearchParams 转换为字符串
+                })
+                .then(response => {
+                    // 打印响应状态和内容
+                    console.log(response);
+                    // 先检查 Content-Type 是否是 JSON
+                    const contentType = response.headers.get('Content-Type');
+                    if (contentType && contentType.includes('application/json')) {
+                        return response.json();  // 解析为 JSON
+                    } else {
+                        return response.text();  // 如果不是 JSON，返回文本
+                    }
+                })
+                .then(data => {
+                    // 判断数据是 JSON 还是纯文本
+                    if (typeof data === 'string') {
+                        console.log("Response text:", data);  // 打印原始响应
+                    } else {
+                        console.log("Parsed JSON data:", data);  // 打印解析后的 JSON 数据
+                        if (data.success) {
+                            // 注册成功，跳转到登录页面
+                            window.location.href = '/login';
+                        } else {
+                            // 处理验证错误
+                            this.errors = data.errors || {};
+                            this.serverError = 'Registration failed. Please try again.';
+                        }
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    this.serverError = 'An error occurred. Please try again.';
+                });
+            }
+
+        }
+    }
+    Vue.createApp(registerVue).mount('#app')
+    
+</script>
 {% endblock %}
+

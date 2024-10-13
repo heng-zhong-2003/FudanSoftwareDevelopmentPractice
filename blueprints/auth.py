@@ -6,7 +6,7 @@ from .forms import RegisterForm, LoginForm
 from models import UserModel
 from werkzeug.security import generate_password_hash, check_password_hash
 # 暂时数据库存储验证码
-from models import EmailCaptchaModel
+# from models import EmailCaptchaModel
 bp = Blueprint('auth', __name__, url_prefix='/auth')
 
 # 验证码有效的秒数，30 分钟
@@ -40,23 +40,35 @@ def login():
         print(form.errors)
         return redirect(url_for("auth.login"))
 
+
 @bp.route("/register", methods=['GET', 'POST'])
 def register():
     if request.method == 'GET':
-        return render_template('register.html')
-    # 表单验证 flask-wtf:wtf-form
-    form = RegisterForm(request.form)
+        # 当用户第一次访问注册页面时，传递一个空的 errors 字典
+        # return jsonify({'success': True}), 200
+        return render_template('register.html', errors={}, serverError='')
+
+
+    # 创建表单对象
+    form = RegisterForm(request.form)  # Vue.js 发送的是 JSON 数据
+    print(form)
     if form.validate():
+        # 提取表单数据
         email = form.email.data
         username = form.username.data
         password = form.password.data
+        
+        # 创建新用户并保存到数据库
         user = UserModel(email=email, username=username, password=generate_password_hash(password))
         db.session.add(user)
         db.session.commit()
-        return redirect(url_for("auth.login"))
+        # 返回成功消息
+        return jsonify({'success': True})
     else:
-        print(form.errors)
-        return redirect(url_for("auth.register"))
+        # 返回表单验证错误
+        return jsonify({'success': False, 'errors': form.errors})
+
+
 
 @bp.route("/logout")
 def logout():

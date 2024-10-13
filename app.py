@@ -3,7 +3,7 @@ import config
 from exts import db, mail
 from models import UserModel
 from blueprints.auth import bp as auth_bp
-from blueprints.pj import bp as pj_bp
+from blueprints.project import bp as pj_bp
 from flask_migrate import Migrate
 
 app = Flask(__name__)
@@ -35,3 +35,4 @@ def context_processor():
 
 if __name__ == '__main__':
     app.run(host='127.0.0.1', port=5000, debug=True)
+
