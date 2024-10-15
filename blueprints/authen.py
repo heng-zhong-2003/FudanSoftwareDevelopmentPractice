@@ -32,8 +32,7 @@ def login():
         email = form.email.data
         input_password = form.password.data
         user = UserModel.query.filter_by(email = email).first() 
-        hashed_password = generate_password_hash(user.password)
-        if user and check_password_hash(hashed_password, input_password):
+        if user and check_password_hash(user.password, input_password):
             session['user_id'] = user.id
             return jsonify({"message": "Login successful!", 'success': True}), 200  # 返回成功消息
         else:
@@ -82,7 +81,7 @@ def logout():
 # 2. 验证码是否过期（用户发送的和 dict 中存储的 timestamp 差）
 # 每次调用，扫遍这个 dict，删掉过期的验证码项
 @bp.route("/captcha/email", methods=['GET'])
-def get_email_captcha():
+def email_captcha():
     email = request.args.get("email")
     source = string.digits*4
     captcha = random.sample(source, 4)
