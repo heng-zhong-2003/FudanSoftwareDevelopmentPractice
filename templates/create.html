@@ -1,0 +1,116 @@
+{% extends "auth_success_base.html" %}
+
+{% block title %}创建新项目{% endblock %}
+
+{% block head %}{% endblock %}
+
+{% block body %}
+<div id="app" class="container mt-5">
+    <h2>Create New Project</h2>
+    <form @submit.prevent="submitForm">
+        <div class="form-group">
+            <label for="name">Name:</label>
+            <input type="text" class="form-control" id="name" v-model="form.name" required>
+            <div v-if="errors.name">
+                <p>{{ errors.name }}</p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="category">Category:</label>
+            <input type="text" class="form-control" id="category" v-model="form.category" required>
+            <div v-if="errors.category">
+                <p>{{ errors.category }}</p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="outcome">Outcome:</label>
+            <input type="text" class="form-control" id="outcome" v-model="form.outcome" required>
+            <div v-if="errors.outcome">
+                <p>{{ errors.outcome }}</p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="is_private">Protected:</label>
+            <select class="form-control"id="is_private" v-model="form.is_private" required>
+                    <option>"Yes, Protected"</option>
+                    <option>"No, Not Protected"</option>
+             </select>
+            <div v-if="errors.is_private">
+                <p>{{ errors.is_private }}</p>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary">Create</button>
+        <div v-if="serverError">
+            <p>{{ serverError }}</p>
+        </div>
+    </form>
+</div>
+<script>
+    const CreateVue = {
+        data(){
+            return {
+                form: {
+                    name: '',
+                    category: '',
+                    outcome: '',
+                    is_private: ''
+                },
+                errors: {},
+                serverError: ''
+            }
+        },
+        methods: {
+            submitForm() {
+                console.log("submit begins", this.form);
+                // 将表单数据转换为 URL-encoded 格式
+                const formBody = new URLSearchParams();
+                Object.entries(this.form).forEach(([key, value]) => {
+                    formBody.append(key, value);
+                });
+
+                fetch('/pj/create', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    body: formBody.toString()  // 将 URLSearchParams 转换为字符串
+                })
+                .then(response => {
+                    // 打印响应状态和内容
+                    console.log(response);
+                    // 先检查 Content-Type 是否是 JSON
+                    const contentType = response.headers.get('Content-Type');
+                    if (contentType && contentType.includes('application/json')) {
+                        return response.json();  // 解析为 JSON
+                    } else {
+                        return response.text();  // 如果不是 JSON，返回文本
+                    }
+                })
+                .then(data => {
+                    // 判断数据是 JSON 还是纯文本
+                    if (typeof data === 'string') {
+                        console.log("Response text:", data);  // 打印原始响应
+                    } else {
+                        console.log("Parsed JSON data:", data);  // 打印解析后的 JSON 数据
+                        if (data.success) {
+                            // 注册成功，跳转到登录页面
+                            window.location.href = '/';
+                        } else {
+                            // 处理验证错误
+                            this.errors = data.errors || {};
+                            this.serverError = 'Create failed. Please try again.';
+                        }
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    this.serverError = 'An error occurred. Please try again.';
+                });
+            }
+
+        }
+    }
+    Vue.createApp(CreateVue).mount('#app')
+    
+</script>
+{% endblock %}
