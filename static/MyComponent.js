@@ -30,6 +30,16 @@ const app2= {
   },
 };
 
+const app3= {
+  template:`
+    <a class="nav-link" v-bind:href="create">Create</a>
+  `,
+  data(){
+    return{
+      create:'http://127.0.0.1:5000/pj/create',
+    };
+  },
+};
 
 const Header_1 = {
     template: `
@@ -48,7 +58,9 @@ const Header_1 = {
       </div>
     </li>
     <li class="nav-item">
-      <a class="nav-link" href="#">选项1</a>
+      <div id=app3>
+        <app3></app3>
+      </div>
     </li>
     <li class="nav-item">
       <a class="nav-link" href="#">选项2</a>
@@ -68,7 +80,7 @@ const Header_1 = {
 </nav>
   `,
   components:{
-    app1,app2
+    app1,app2,app3
   }
 };
 
