@@ -15,9 +15,16 @@ def about():
 
 @bp.route("/create", methods=['GET', 'POST'])
 def create():
-    if request.method == 'POST':
-        return render_template('create.html')
-    form = CreateForm(create.form)
+    if request.method == 'GET':
+        return render_template('create.html', errors={}, serverError='')
+    form = CreateForm(request.form)
+    #testing
+    print("Form Data:", request.form)  
+    print("name:", form.name.data) 
+    print("category:", form.category.data)  
+    print("outcome:", form.outcome.data)  
+    print("isprivate:", form.is_private.data)  
+    #
     if form.validate():
         name = form.name.data
         field = form.field.data
@@ -28,10 +35,10 @@ def create():
         project = ProjectModel(name=name, field=field, category=category, outcome=outcome, is_private=is_private)
         db.session.add(project)
         db.session.commit()
-        return redirect(url_for("project.create"))
+        return jsonify({'success': True})
     else:
-        print(form.errors)
-        return redirect(url_for("project.create"))
+        # 返回表单验证错误
+        return jsonify({'success': False, 'errors': form.errors})
 
 @bp.route("/create", methods=['DELETE'])
 def delete():
