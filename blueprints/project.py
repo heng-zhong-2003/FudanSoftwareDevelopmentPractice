@@ -40,7 +40,7 @@ def create():
         # 返回表单验证错误
         return jsonify({'success': False, 'errors': form.errors})
 
-@bp.route("/create", methods=['DELETE'])
+@bp.route("/delete", methods=['DELETE'])
 def delete():
     if request.method == 'DELETE':
         return render_template('delete.html')
