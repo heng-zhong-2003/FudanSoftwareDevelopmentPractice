@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, request, redirect, url_for,  jsoni
 from .forms import CreateForm, DeleteForm
 from models import ProjectModel
 from exts import db
-from decorators import login_required
+from .decorators import login_required
 
 bp = Blueprint('pj', __name__, url_prefix='/pj')
 
