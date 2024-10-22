@@ -36,7 +36,7 @@ def create():
     print("name:", form.name.data) 
     print("category:", form.category.data)  
     print("outcome:", form.outcome.data)  
-    print("isprivate:", form.is_private.data)  
+    print("is_private:", form.is_private.data)  
     #
     if form.validate():
         name = form.name.data
