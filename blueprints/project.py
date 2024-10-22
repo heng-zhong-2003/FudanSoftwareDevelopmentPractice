@@ -79,5 +79,5 @@ def update(id):
         project.field = request.form.get('field')
         project.outcome = request.form.get('outcome')
         db.session.commit()
-    return render_template('update.html', project=project)
+    return render_template('about.html', project=project)
     
