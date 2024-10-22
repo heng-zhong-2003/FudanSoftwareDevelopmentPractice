@@ -20,6 +20,11 @@ class ProjectModel(db.Model):
     category = db.Column(db.String(category_max_len), nullable=False)
     outcome = db.Column(db.String(outcome_max_len), nullable=False)
     is_private = db.Column(db.Boolean, nullable=False, default=False)
+    #create_time = db.Column(db.DateTime, nullable=False)
+    #外键
+    #user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    # 反向引用
+    #user = db.relationship('UserModel', backref=db.backref('projects'))
 
 # 暂时使用数据库存储验证码
 # class EmailCaptchaModel(db.Model):
