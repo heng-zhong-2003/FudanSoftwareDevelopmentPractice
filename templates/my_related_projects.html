@@ -15,6 +15,7 @@
             <th scope="col">Category</th>
             <th scope="col">Outcome</th>
             <th scope="col">Private?</th>
+            <th scope="col">Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -26,7 +27,13 @@
             <td>{{project['category']}}</td>
             <td>{{project['outcome']}}</td>
             <td>{{project['is_private']}}</td>
-
+            <td>
+                <div class="button-container">
+                    <button type="button" onclick="window.location.href = '/pj/about/'+{{project['id']}} ; "class="btn btn-info">About</button>
+                    <button type="button" onclick="window.location.href = '/pj/update/'+{{project['id']}} ; "class="btn btn-warning">Update</button>
+                    <button type="button" onclick="window.location.href = '/pj/delete/'+{{project['id']}} ; "class="btn btn-danger">Delete</button>
+                </div>
+            </td>
         </tr>
     {% endfor %}
     </tbody>

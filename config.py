@@ -3,9 +3,9 @@ SECRET_KEY = ".yycsieovltsrifym;"
 
 HOSTNAME = '127.0.0.1'
 PORT = '3306'
-DATABASE = 'research_project'
+DATABASE = 'software_architecture'
 USERNAME = 'root'
-PASSWORD = '20021206'
+PASSWORD = '******'
 DB_URI = 'mysql+pymysql://{}:{}@{}:{}/{}?charset=utf8'.format(USERNAME, PASSWORD, HOSTNAME, PORT, DATABASE)
 SQLALCHEMY_DATABASE_URI = DB_URI
 

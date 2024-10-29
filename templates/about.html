@@ -5,5 +5,8 @@
 {% block head %}{% endblock %}
 
 {% block body %}
-    <h1>About site</h1>
+    <h1>About Project</h1>
+    <h2>{{project['name']}}</h2>
+    <p>{{project['field']}},{{project['category']}},Private: {{project['is_private']}}</p>
+    <p>{{project['outcome']}}</p>
 {% endblock %}
