@@ -17,7 +17,7 @@ def index():
         error = 'Invalid page number'
     else:
         flash(error)
-    return render_template('my_related_projects.html', projects=projects, i=current_page)
+    return render_template('index.html', projects=projects, i=current_page)
 
 @bp.route('/about/<pj_id>')
 def about(pj_id):
