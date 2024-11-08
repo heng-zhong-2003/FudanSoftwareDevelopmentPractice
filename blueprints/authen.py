@@ -52,6 +52,7 @@ def register():
     print("Username:", form.username.data)  # 打印特定字段（例如 username）
     print("Password:", form.password.data)  # 打印特定字段（例如 password）
     print("Email:", form.email.data)  # 打印特定字段（例如 email）
+
     if form.validate():
         # 提取表单数据
         email = form.email.data
@@ -80,14 +81,22 @@ def logout():
 # 1. 验证码是否正确
 # 2. 验证码是否过期（用户发送的和 dict 中存储的 timestamp 差）
 # 每次调用，扫遍这个 dict，删掉过期的验证码项
-@bp.route("/captcha/email", methods=['GET'])
+@bp.route("/captcha/email", methods=['POST'])
 def email_captcha():
-    email = request.args.get("email")
+    # email = request.args.get("email")
+    email = request.json.get("email")
     source = string.digits*4
     captcha = random.sample(source, 4)
     captcha = "".join(captcha)
     message = Message(subject='注册验证码', recipients=[email], body='你的验证码是：'+captcha)
-    mail.send(message)
+    print(message)
+
+    try:
+        mail.send(message)
+    except Exception as e:
+        # 邮件发送失败
+        return jsonify({"code": 500, "message": f"Failed to send email: {str(e)}", "data": None})
+    
     '''
     todo: redis
     1. 保存验证码到数据库

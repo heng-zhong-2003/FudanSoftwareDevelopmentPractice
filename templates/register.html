@@ -6,42 +6,57 @@
 
 {% block body %}
 <div id="app" class="container mt-5">
-    <h2>Register</h2>
-    <form @submit.prevent="submitForm">
+    <h2 class="text-center">Register</h2>
+    <form @submit.prevent="submitForm" class="mt-4">
+
         <div class="form-group">
             <label for="email">Email:</label>
             <input type="email" class="form-control" id="email" v-model="form.email" required>
+            <button type="button" class="btn btn-secondary mt-2 mb-3 btn-block" @click="sendCaptcha">Send Captcha</button>
             <div v-if="errors.email">
-                <p>{{ errors.email }}</p>
+                <p class="text-danger">{{ errors.email }}</p>
             </div>
         </div>
+        
         <div class="form-group">
             <label for="username">Username:</label>
             <input type="text" class="form-control" id="username" v-model="form.username" required>
             <div v-if="errors.username">
-                <p>{{ errors.username }}</p>
+                <p class="text-danger">{{ errors.username }}</p>
             </div>
         </div>
+        
         <div class="form-group">
             <label for="password">Password:</label>
             <input type="password" class="form-control" id="password" v-model="form.password" required>
             <div v-if="errors.password">
-                <p>{{ errors.password }}</p>
+                <p class="text-danger">{{ errors.password }}</p>
             </div>
         </div>
+        
         <div class="form-group">
-            <label for="password_confirm">Password:</label>
+            <label for="password_confirm">Confirm Password:</label>
             <input type="password" class="form-control" id="password_confirm" v-model="form.password_confirm" required>
-            <div v-if="errors.password">
-                <p>{{ errors.password_confirm }}</p>
+            <div v-if="errors.password_confirm">
+                <p class="text-danger">{{ errors.password_confirm }}</p>
             </div>
         </div>
-        <button type="submit" class="btn btn-primary">Register</button>
-        <div v-if="serverError">
+        
+        <div class="form-group">
+            <label for="captcha">Captcha:</label>
+            <input type="text" class="form-control" id="captcha" v-model="form.captcha" required>
+            <div v-if="errors.captcha">
+                <p class="text-danger">{{ errors.captcha }}</p>
+            </div>
+        </div>
+        
+        <button type="submit" class="btn btn-primary btn-block">Register</button>
+        <div v-if="serverError" class="text-danger mt-3">
             <p>{{ serverError }}</p>
         </div>
     </form>
 </div>
+
 <script>
     const registerVue = {
         data(){
@@ -50,7 +65,8 @@
                     email: '',
                     username: '',
                     password: '',
-                    password_confirm: ''
+                    password_confirm: '',
+                    captcha:''
                 },
                 errors: {},
                 serverError: ''
@@ -91,7 +107,7 @@
                         console.log("Parsed JSON data:", data);  // 打印解析后的 JSON 数据
                         if (data.success) {
                             // 注册成功，跳转到登录页面
-                            window.location.href = '/login';
+                            window.location.href = '/auth/login';
                         } else {
                             // 处理验证错误
                             this.errors = data.errors || {};
@@ -103,8 +119,25 @@
                     console.error('Error:', error);
                     this.serverError = 'An error occurred. Please try again.';
                 });
+            },
+            sendCaptcha() {
+                fetch('/auth/captcha/email', {
+                    method: 'POST',  // 使用 POST 方法
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ email: this.form.email })  // 通过请求体传输 email 数据
+                })                
+                .then(response => response.json())
+                .then(data => {
+                    if (data.code === 200) {
+                        alert("验证码已发送到您的邮箱！");
+                    } else {
+                        alert(data.message || "发送验证码失败，请重试。");
+                    }
+                })
+                .catch(error => console.error('Error:', error));
             }
-
         }
     }
     Vue.createApp(registerVue).mount('#app')

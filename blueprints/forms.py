@@ -27,10 +27,20 @@ class RegisterForm(wtforms.Form):
         captcha = field.data
         email = self.email.data
         # 暂时存储验证码的数据库
-        if authen.email_captcha_env[email] != captcha:
-            raise wtforms.ValidationError(message="验证码不正确!")
+        # 从 email_captcha_env 获取验证码对象
+        captcha_obj = authen.email_captcha_env.get(email)
+        
+        # 检查验证码是否存在
+        if not captcha_obj:
+            raise wtforms.ValidationError("验证码已过期或不存在，请重新获取！")
+        
+        # 比较验证码值
+        if captcha_obj.captcha != captcha:
+            raise wtforms.ValidationError("验证码不正确！")
         else:
+            # 验证成功后删除验证码记录
             authen.email_captcha_env.pop(email)
+
 
 class LoginForm(wtforms.Form):
     email = wtforms.StringField(validators=[Email(message="邮箱格式不正确!")])

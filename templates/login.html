@@ -5,23 +5,24 @@
 {% block head %}{% endblock %}
 
 {% block body %}
-<div id="app">
-    <h2>Login</h2>
-    <form @submit.prevent="submitForm">
+<div id="app" class="container mt-5">
+    <h2 class="text-center">Login</h2>
+    <form @submit.prevent="submitForm" class="mt-4">
         <div class="form-group">
             <label for="email">Email:</label>
             <input type="email" class="form-control" id="email" v-model="form.email" required>
-            
         </div>
         <div class="form-group">
             <label for="password">Password:</label>
             <input type="password" class="form-control" id="password" v-model="form.password" required>
-            
         </div>
-        <div v-if="errorMessage">{{ errorMessage }}</div>
-        <button type="submit" class="btn btn-primary">Login</button>
+        <div v-if="errorMessage" class="alert alert-danger">
+            {{ errorMessage }}
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">Login</button>
     </form>
 </div>
+
 <script>
     const registerVue = {
         data(){
@@ -67,8 +68,8 @@
                     } else {
                         console.log("Parsed JSON data:", data);  // 打印解析后的 JSON 数据
                         if (data.success) {
-                            // 注册成功，跳转到登录页面
-                            window.location.href = '/login';
+                            // 登录成功，跳转到个人主页
+                            window.location.href = '/pj';
                         } else {
                             // 处理验证错误
                             this.errors = data.errors || {};
