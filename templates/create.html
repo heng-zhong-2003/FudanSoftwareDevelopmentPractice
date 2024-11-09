@@ -17,14 +17,18 @@
         </div>
         <div class="form-group">
             <label for="category">Category:</label>
-            <input type="text" class="form-control" id="category" v-model="form.category" required>
-            <div v-if="errors.category">
-                <p>{{ errors.category }}</p>
-            </div>
+            <select class="form-control"id="is_private" v-model="form.category" required>
+                <option>commercial</option>
+                <option>government-sponsored</option>
+         </select>
         </div>
         <div class="form-group">
-            <label for="category">Field:</label>
-            <input type="text" class="form-control" id="field" v-model="form.field" required>
+            <label for="field">Field:</label>
+            <select class="form-control"id="field" v-model="form.field" required>
+                <option>art</option>
+                <option>science</option>
+                <option>military</option>
+            </select>
             <div v-if="errors.field">
                 <p>{{ errors.field }}</p>
             </div>
@@ -32,15 +36,13 @@
         <div class="form-group">
             <label for="outcome">Outcome:</label>
             <input type="text" class="form-control" id="outcome" v-model="form.outcome" required>
-            <div v-if="errors.outcome">
-                <p>{{ errors.outcome }}</p>
-            </div>
+            
         </div>
         <div class="form-group">
             <label for="is_private">Protected:</label>
             <select class="form-control"id="is_private" v-model="form.is_private" required>
-                    <option>"Yes, Protected"</option>
-                    <option>"No, Not Protected"</option>
+                    <option>Private</option>
+                    <option>Public</option>
              </select>
             <div v-if="errors.is_private">
                 <p>{{ errors.is_private }}</p>
