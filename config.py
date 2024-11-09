@@ -5,11 +5,7 @@ HOSTNAME = '127.0.0.1'
 PORT = '3306'
 DATABASE = 'research_project'
 USERNAME = 'root'
-<<<<<<< HEAD
 PASSWORD = '20021206'
-=======
-PASSWORD = 'aaa'
->>>>>>> 2f3f461f5629d8ae007c5eb0dc29ae33941f98a3
 DB_URI = 'mysql+pymysql://{}:{}@{}:{}/{}?charset=utf8'.format(USERNAME, PASSWORD, HOSTNAME, PORT, DATABASE)
 SQLALCHEMY_DATABASE_URI = DB_URI
 
