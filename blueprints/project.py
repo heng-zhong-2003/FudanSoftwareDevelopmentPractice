@@ -43,7 +43,10 @@ def create():
         field = form.field.data
         category = form.category.data
         outcome = form.outcome.data
-        is_private = form.is_private.data
+        if(form.is_private.data=='Public'):
+            is_private = True
+        else:
+            is_private = False
 
         project = ProjectModel(name=name, field=field, category=category, outcome=outcome, is_private=is_private)
         db.session.add(project)

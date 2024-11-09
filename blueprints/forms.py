@@ -53,7 +53,9 @@ class CreateForm(wtforms.Form):
     field = wtforms.StringField(
         validators=[AnyOf(values=['societal', 'science', 'military'], message="项目类别不正确!")])
     outcome = wtforms.StringField(validators=[Length(min=0, max=1024, message="成果长度不正确!")])
-    is_private = wtforms.BooleanField()
+    #is_private = wtforms.BooleanField()
+    is_private = wtforms.StringField(
+        validators=[AnyOf(values=['Public', 'Private'], message="是否保密输入不正确!")])
 
 class DeleteForm(wtforms.Form):
     id = wtforms.IntegerField()
