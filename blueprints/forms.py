@@ -48,10 +48,10 @@ class LoginForm(wtforms.Form):
 
 class CreateForm(wtforms.Form):
     name = wtforms.StringField(validators=[Length(min=1, max=models.name_max_len, message="项目名称长度不正确")])
-    field = wtforms.StringField(validators=[AnyOf(values=['commercial', 'government-sponsored'], message="资金来源格式不正确")])
+    category = wtforms.StringField(validators=[AnyOf(values=['commercial', 'government-sponsored'], message="资金来源格式不正确")])
     # to do
-    category = wtforms.StringField(
-        validators=[AnyOf(values=['art', 'science', 'military'], message="项目类别不正确!")])
+    field = wtforms.StringField(
+        validators=[AnyOf(values=['societal', 'science', 'military'], message="项目类别不正确!")])
     outcome = wtforms.StringField(validators=[Length(min=0, max=1024, message="成果长度不正确!")])
     is_private = wtforms.BooleanField()
 
