@@ -48,9 +48,11 @@ def create():
         project = ProjectModel(name=name, field=field, category=category, outcome=outcome, is_private=is_private)
         db.session.add(project)
         db.session.commit()
+        print('create project success')
         return jsonify({'success': True})
     else:
         # 返回表单验证错误
+        print('create project fail')
         return jsonify({'success': False, 'errors': form.errors})
 
 @bp.route("/delete/<int:id>", methods=['GET'])
