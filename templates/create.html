@@ -23,6 +23,13 @@
             </div>
         </div>
         <div class="form-group">
+            <label for="category">Field:</label>
+            <input type="text" class="form-control" id="field" v-model="form.field" required>
+            <div v-if="errors.field">
+                <p>{{ errors.field }}</p>
+            </div>
+        </div>
+        <div class="form-group">
             <label for="outcome">Outcome:</label>
             <input type="text" class="form-control" id="outcome" v-model="form.outcome" required>
             <div v-if="errors.outcome">
@@ -51,6 +58,7 @@
             return {
                 form: {
                     name: '',
+                    field:'',
                     category: '',
                     outcome: '',
                     is_private: ''
