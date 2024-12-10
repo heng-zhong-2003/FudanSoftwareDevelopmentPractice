@@ -41,6 +41,17 @@ const app3= {
   },
 };
 
+const app4= {
+  template:`
+    <a class="nav-link" v-bind:href="my_related_projects">my_related_projects</a>
+  `,
+  data(){
+    return{
+      my_related_projects:'http://127.0.0.1:5000/pj/my_related_projects',
+    };
+  },
+};
+
 const Header_1 = {
     template: `
 <nav class="navbar navbar-expand-lg navbar-light bg-primary">
@@ -63,7 +74,9 @@ const Header_1 = {
       </div>
     </li>
     <li class="nav-item">
-      <a class="nav-link" href="#">选项2</a>
+      <div id=app4>
+        <app4></app4>
+      </div>
     </li>
     <li class="nav-item dropdown">
       <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -80,7 +93,7 @@ const Header_1 = {
 </nav>
   `,
   components:{
-    app1,app2,app3
+    app1,app2,app3,app4
   }
 };
 
