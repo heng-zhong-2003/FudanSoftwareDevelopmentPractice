@@ -26,6 +26,11 @@ class ProjectModel(db.Model):
     # 反向引用
     #user = db.relationship('UserModel', backref=db.backref('projects'))
 
+class ProjectToUserModel(db.Model):
+    __tablename__ = 'project2user'
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
+    pj_id = db.Column(db.Integer,db.ForeignKey('project.id'), primary_key=True)
+
 # 暂时使用数据库存储验证码
 # class EmailCaptchaModel(db.Model):
 #     __tablename__ = 'email_captcha'

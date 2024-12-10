@@ -7,5 +7,5 @@ def login_required(func):
     def check_login(*args, **kwargs):
         if g.user:
             return func(*args, **kwargs)
-        return redirect(url_for('authen.login'))
+        return redirect(url_for('auth.login'))
     return check_login

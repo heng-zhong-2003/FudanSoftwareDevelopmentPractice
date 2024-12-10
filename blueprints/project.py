@@ -1,10 +1,12 @@
 from flask import Blueprint, render_template, request, redirect, url_for,  jsonify, session, flash
 from .forms import CreateForm, DeleteForm
-from models import ProjectModel
+from models import ProjectModel, ProjectToUserModel
 from exts import db
 from .decorators import login_required
 
 bp = Blueprint('pj', __name__, url_prefix='/pj')
+
+
 
 @bp.route('/')
 def index():
@@ -19,7 +21,27 @@ def index():
         flash(error)
     return render_template('index.html', projects=projects, i=current_page)
 
+@bp.route('/my_related_projects')
+@login_required
+def my_related_projects():
+    error = None
+    current_page = request.args.get('page', 1)
+    projects = (db.session.query(ProjectModel)
+        .join(ProjectToUserModel, ProjectModel.id == ProjectToUserModel.pj_id)
+        .filter(ProjectToUserModel.user_id == session['user_id'])
+        .all()
+    )
+    nums_pj = len(projects)
+    if current_page <1 or current_page > nums_pj//10+1:  # 404
+        i = 1
+        error = 'Invalid page number'
+    else:
+        flash(error)
+    return render_template('my_related_projects.html', projects=projects, i=current_page)
+
+
 @bp.route('/about/<pj_id>')
+@login_required
 def about(pj_id):
     project = ProjectModel.query.get(pj_id)
 
@@ -52,6 +74,9 @@ def create():
         project = ProjectModel(name=name, field=field, category=category, outcome=outcome, is_private=is_private)
         db.session.add(project)
         db.session.commit()
+        pj2user = ProjectToUserModel(user_id = session['user_id'], pj_id = project.id)
+        db.session.add(pj2user)
+        db.session.commit()
         print('create project success')
         return jsonify({'success': True})
     else:
@@ -60,6 +85,7 @@ def create():
         return jsonify({'success': False, 'errors': form.errors})
 
 @bp.route("/delete/<int:id>", methods=['GET'])
+@login_required
 def delete(id):
     project = ProjectModel.query.get(id)
     db.session.delete(project)  # 从会话中删除用户  
@@ -67,6 +93,7 @@ def delete(id):
     return f'Project {project.name} has been deleted.'
 
 @bp.route("/search/<string:type>:<string:search>",methods=['GET' ,'POST'])
+@login_required
 def search(type, search):
     current_page = request.form.get('page',1)
     match type:

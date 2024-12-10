@@ -73,7 +73,7 @@ def register():
 @bp.route("/logout")
 def logout():
     session.clear()
-    return redirect("/")
+    return redirect("/auth/login")
 
 # TODO: 全局创建一个 email * (captcha, timestamp_at_creation) dict
 # 每次这个函数（发送验证码）被调用，都把这个用户的 email 和生成的验证码
